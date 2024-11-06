@@ -1,28 +1,57 @@
 package ru.dumdumbich.android.steward.ui.base
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.appcompat.app.AppCompatActivity
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import ru.dumdumbich.android.steward.tools.logger.Logger
 
-abstract class BaseActivity<VB : ViewBinding>(
+abstract class BaseFragment<VB : ViewBinding>(
     private val bindingInflater: (inflater: LayoutInflater) -> VB
-) : AppCompatActivity(), KoinComponent {
-
-    protected lateinit var ui: VB
+) : Fragment(), KoinComponent {
 
     // вместо isDebug = true/false передавать значение BuildConfig.Debug - уточнить как это правильно сделать
     protected val logger: Logger by inject { parametersOf(this, true) }
 
+    private var _ui: VB? = null
+    protected val ui get() = _ui ?: error("Binding of ${this::class.java.simpleName} is null")
+
+    override fun onAttach(context: Context) {
+        logger.toConsole("onAttach() called with: context = $context")
+        super.onAttach(context)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         logger.toConsole("onCreate() called with: savedInstanceState = $savedInstanceState")
         super.onCreate(savedInstanceState)
-        ui = bindingInflater.invoke(layoutInflater)
-        setContentView(ui.root)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        logger.toConsole(
+            "onCreateView() called with: inflater = $inflater, " +
+                    "container = $container, " +
+                    "savedInstanceState = $savedInstanceState"
+        )
+        _ui = bindingInflater.invoke(layoutInflater)
+        return ui.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        logger.toConsole(
+            "onViewCreated() called with: view = $view, " +
+                    "savedInstanceState = $savedInstanceState"
+        )
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onStart() {
@@ -43,6 +72,12 @@ abstract class BaseActivity<VB : ViewBinding>(
     override fun onStop() {
         logger.toConsole("onStop() called")
         super.onStop()
+    }
+
+    override fun onDestroyView() {
+        logger.toConsole("onDestroyView() called")
+        super.onDestroyView()
+        _ui = null
     }
 
     override fun onDestroy() {

@@ -6,16 +6,44 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import ru.dumdumbich.android.steward.databinding.ActivityMainBinding
 import ru.dumdumbich.android.steward.ui.base.BaseActivity
+import ru.dumdumbich.android.steward.ui.core.scene.Scene
+import ru.dumdumbich.android.steward.ui.navigation.ScenarioMainActivity
 
-class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
+class MainActivity : BaseActivity<ActivityMainBinding>(
+    ActivityMainBinding::inflate
+) {
+
+    private val mainMenu: Scene = ScenarioMainActivity.MainMenu().scene
+    private val mainScene: Scene = ScenarioMainActivity.MainScene().scene
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        logger.toConsole("log from MainActivity : onCreate()")
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         ViewCompat.setOnApplyWindowInsetsListener(ui.mainLayout) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        mainMenu.install(supportFragmentManager, ui.menuContainer.id)
+        mainScene.install(supportFragmentManager, ui.sceneContainer.id)
+
+        ui.mainLayout.apply {
+            setOnClickListener {
+                logger.toConsole("ui.mainLayout.setOnClickListener")
+                mainMenu.hide()
+            }
+            setOnLongClickListener {
+                logger.toConsole("ui.mainLayout.setOnLongClickListener")
+                mainMenu.show()
+                true
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mainMenu.hide()
     }
 }
