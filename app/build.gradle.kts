@@ -39,6 +39,10 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+    packagingOptions {
+        resources.excludes.add("META-INF/*")
+    }
 }
 
 dependencies {
@@ -49,6 +53,10 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.koin.core)
     implementation(libs.koin.android)
+    implementation(libs.ktor.server.core)
+    implementation(libs.ktor.server.netty)
+    implementation(libs.ktor.server.content.negotiation)
+    implementation(libs.ktor.serialization.json)
     api(libs.logger.timber)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

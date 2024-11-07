@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import org.koin.android.ext.android.inject
 import ru.dumdumbich.android.steward.databinding.ActivityMainBinding
+import ru.dumdumbich.android.steward.server.iot.IotServer
 import ru.dumdumbich.android.steward.ui.base.BaseActivity
 import ru.dumdumbich.android.steward.ui.core.scene.Scene
 import ru.dumdumbich.android.steward.ui.navigation.ScenarioMainActivity
@@ -12,6 +14,8 @@ import ru.dumdumbich.android.steward.ui.navigation.ScenarioMainActivity
 class MainActivity : BaseActivity<ActivityMainBinding>(
     ActivityMainBinding::inflate
 ) {
+
+    private val server: IotServer by inject()
 
     private val mainMenu: Scene = ScenarioMainActivity.MainMenu().scene
     private val mainScene: Scene = ScenarioMainActivity.MainScene().scene
@@ -40,10 +44,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(
                 true
             }
         }
+        server.start()
     }
 
     override fun onResume() {
         super.onResume()
         mainMenu.hide()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        server.stop()
     }
 }
