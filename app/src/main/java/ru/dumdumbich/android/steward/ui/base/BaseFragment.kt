@@ -11,6 +11,10 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import ru.dumdumbich.android.steward.tools.logger.Logger
+import ru.dumdumbich.android.steward.ui.core.snack.SimpleSnack
+import ru.dumdumbich.android.steward.ui.core.toast.CenterToaster
+import ru.dumdumbich.android.steward.ui.core.toast.SimpleToaster
+
 
 abstract class BaseFragment<VB : ViewBinding>(
     private val bindingInflater: (inflater: LayoutInflater) -> VB
@@ -18,6 +22,9 @@ abstract class BaseFragment<VB : ViewBinding>(
 
     // вместо isDebug = true/false передавать значение BuildConfig.Debug - уточнить как это правильно сделать
     protected val logger: Logger by inject { parametersOf(this, true) }
+    protected val simpleToaster: SimpleToaster by inject()
+    protected val centerToaster: CenterToaster by inject()
+    protected lateinit var simpleSnack: SimpleSnack
 
     private var _ui: VB? = null
     protected val ui get() = _ui ?: error("Binding of ${this::class.java.simpleName} is null")
@@ -52,6 +59,7 @@ abstract class BaseFragment<VB : ViewBinding>(
                     "savedInstanceState = $savedInstanceState"
         )
         super.onViewCreated(view, savedInstanceState)
+        simpleSnack = SimpleSnack(view)
     }
 
     override fun onStart() {

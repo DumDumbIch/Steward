@@ -8,6 +8,10 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import ru.dumdumbich.android.steward.tools.logger.Logger
+import ru.dumdumbich.android.steward.ui.core.snack.SimpleSnack
+import ru.dumdumbich.android.steward.ui.core.toast.CenterToaster
+import ru.dumdumbich.android.steward.ui.core.toast.SimpleToaster
+
 
 abstract class BaseActivity<VB : ViewBinding>(
     private val bindingInflater: (inflater: LayoutInflater) -> VB
@@ -17,12 +21,16 @@ abstract class BaseActivity<VB : ViewBinding>(
 
     // вместо isDebug = true/false передавать значение BuildConfig.Debug - уточнить как это правильно сделать
     protected val logger: Logger by inject { parametersOf(this, true) }
+    protected val simpleToaster: SimpleToaster by inject()
+    protected val centerToaster: CenterToaster by inject()
+    protected lateinit var simpleSnack: SimpleSnack
 
     override fun onCreate(savedInstanceState: Bundle?) {
         logger.toConsole("onCreate() called with: savedInstanceState = $savedInstanceState")
         super.onCreate(savedInstanceState)
         ui = bindingInflater.invoke(layoutInflater)
         setContentView(ui.root)
+        simpleSnack = SimpleSnack(ui.root)
     }
 
     override fun onStart() {
