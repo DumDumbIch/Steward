@@ -1,5 +1,6 @@
 package ru.dumdumbich.android.steward.ui.core.scene
 
+import androidx.core.bundle.Bundle
 import androidx.core.bundle.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -11,10 +12,10 @@ import ru.dumdumbich.android.steward.ui.base.BaseScene
  *
  * @constructor Create empty Scene
  */
-internal class Scene(
+class Scene(
     fragmentClass: Class<out Fragment>,
     tag: String? = null,
-    args: Pair<String, Any>? = null
+    args: Bundle? = null  // Pair<String, Any>? = null
 ) : BaseScene() {
 
     private var _fragmentClass: Class<out Fragment>? = null
@@ -29,8 +30,9 @@ internal class Scene(
     private var _tag: String? = null
     private val tag: String get() = _tag ?: ""
 
-    private var _args: Pair<String, Any?>? = null
-    private val args: Pair<String, Any?> get() = _args ?: ("" to "")
+    private var _args: Bundle? = null  // Pair<String, Any?>? = null
+    private val args: Bundle
+        get() = _args ?: bundleOf("" to "")  // Pair<String, Any?> get() = _args ?: ("" to "")
 
     private var _isVisible: Boolean = false
 
@@ -55,7 +57,7 @@ internal class Scene(
             .replace(
                 containerLayout,
                 fragmentClass,
-                bundleOf(args),
+                args,
                 tag
             )
             .commit()
