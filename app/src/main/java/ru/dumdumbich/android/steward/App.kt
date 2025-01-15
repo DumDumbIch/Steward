@@ -5,9 +5,11 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
+import ru.dumdumbich.android.steward.data.di.dataModule
 import ru.dumdumbich.android.steward.di.appModule
 import ru.dumdumbich.android.steward.tools.logger.di.loggerModule
 import timber.log.Timber
+
 
 class App : Application() {
 
@@ -17,7 +19,7 @@ class App : Application() {
         startKoin {
             androidLogger(Level.DEBUG)
             androidContext(this@App)
-            modules(listOf(appModule, loggerModule))
+            modules(listOf(appModule, loggerModule, dataModule))
         }
     }
 
