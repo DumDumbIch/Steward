@@ -8,13 +8,13 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
+import ru.dumdumbich.android.steward.domain.core.event.NavigationEventBus
 import ru.dumdumbich.android.steward.ui.base.BaseViewModel
-import ru.dumdumbich.android.steward.ui.navigation.Navigation
-import ru.dumdumbich.android.steward.ui.navigation.NavigationEvent
+
 
 class MainMenuViewModel : BaseViewModel() {
 
-    private val navigator: Navigation by inject()
+    private val navigationEventBus: NavigationEventBus by inject()
 
     private var _viewEvent:
             MutableStateFlow<MainMenuViewEvent> = MutableStateFlow(MainMenuViewEvent.Empty)
@@ -56,15 +56,15 @@ class MainMenuViewModel : BaseViewModel() {
                 MainMenuViewEvent.Empty -> Unit
 
                 MainMenuViewEvent.OnPressHomeMenuItem -> {
-                    navigator.putEvent(NavigationEvent.ToHomeScreen)
+                    navigationEventBus.onShowHomeScreen()
                 }
 
                 MainMenuViewEvent.OnPressToolsMenuItem -> {
-                    navigator.putEvent(NavigationEvent.ToToolsScreen)
+                    navigationEventBus.onShowToolsScreen()
                 }
 
                 MainMenuViewEvent.OnPressTuneMenuItem -> {
-                    navigator.putEvent(NavigationEvent.ToTuneScreen)
+                    navigationEventBus.onShowTuneScreen()
                 }
             }
             clearEvent()

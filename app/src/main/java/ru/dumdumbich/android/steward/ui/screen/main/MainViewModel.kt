@@ -7,20 +7,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.core.component.inject
 import ru.dumdumbich.android.steward.ui.base.BaseViewModel
-import ru.dumdumbich.android.steward.ui.navigation.Navigation
-import ru.dumdumbich.android.steward.ui.navigation.NavigationEvent
 
 internal class MainViewModel : BaseViewModel() {
-
-    private val navigator: Navigation by inject()
-    private val navigationEvents = listOf(
-        NavigationEvent.ToHomeScreen,
-        NavigationEvent.ToTuneScreen,
-        NavigationEvent.ToToolsScreen
-    )
-    private var currentNavigatorEventsPosition: Int = 0
 
     private var _viewEvent:
             MutableStateFlow<MainViewEvent> = MutableStateFlow(MainViewEvent.Empty)
@@ -65,17 +54,6 @@ internal class MainViewModel : BaseViewModel() {
         }
     }
 
-    private fun switchScene() {
-        viewModelScope.launch {
-            if (currentNavigatorEventsPosition < navigationEvents.lastIndex) {
-                currentNavigatorEventsPosition += 1
-            } else {
-                currentNavigatorEventsPosition = 0
-            }
-            navigator.putEvent(navigationEvents[currentNavigatorEventsPosition])
-        }
-    }
-
     private fun clearEvent() {
         viewModelScope.launch {
             _viewEvent.emit(MainViewEvent.Empty)
@@ -93,10 +71,7 @@ internal class MainViewModel : BaseViewModel() {
             logger.toConsole("Event = $event")
             when (event) {
                 MainViewEvent.Empty -> Unit
-                MainViewEvent.OnClickMainButton -> {
-                    //switchProgress()
-                    switchScene()
-                }
+                MainViewEvent.OnClickMainButton -> {}
             }
             clearEvent()
         }.launchIn(viewModelScope)

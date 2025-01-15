@@ -1,5 +1,6 @@
 package ru.dumdumbich.android.steward.ui.screen.main
 
+
 internal sealed class MainViewAction {
     data object Idle : MainViewAction()
     data object ShowProgress : MainViewAction()

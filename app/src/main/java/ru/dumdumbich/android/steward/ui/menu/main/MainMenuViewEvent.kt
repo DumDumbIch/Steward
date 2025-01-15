@@ -1,5 +1,6 @@
 package ru.dumdumbich.android.steward.ui.menu.main
 
+
 internal sealed class MainMenuViewEvent {
     data object Empty : MainMenuViewEvent()
     data object OnPressHomeMenuItem : MainMenuViewEvent()
